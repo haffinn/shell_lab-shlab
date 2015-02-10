@@ -5,10 +5,10 @@
  * 
  * === User information ===
  * Group: NONE
- * User 1: dude13
- * SSN: 1807825919
- * User 2: 
- * SSN: X
+ * User 1: hafthort12
+ * SSN: 2204922819
+ * User 2: hrafnkell13
+ * SSN: 3012932249
  * === End User Information ===
  */
 #include <stdio.h>
