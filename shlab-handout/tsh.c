@@ -6,9 +6,9 @@
  * === User information ===
  * Group: NONE
  * User 1: hafthort12
- * SSN: 2204922819
+ * SSN: 220492-2819
  * User 2: hrafnkell13
- * SSN: 3012932249
+ * SSN: 301293-2249
  * === End User Information ===
  */
 #include <stdio.h>
@@ -174,7 +174,34 @@ int main(int argc, char **argv)
  */
 void eval(char *cmdline) 
 {
+    // KODI UR GLAERUM FRA FREYSTEINI: 
+
+    // char *argv[MAXARGS]; /* argv for execve() */
+    // int bg;              /* should the job run in bg or fg? */
+    // pid_t pid;           /* process id */
+
+    // bg = parseline(cmdline, argv); 
+    // if (!builtin_command(argv)) { 
+    // if ((pid = Fork()) == 0) {   /* child runs user job */
+    //     if (execve(argv[0], argv, environ) < 0) {
+    //     printf("%s: Command not found.\n", argv[0]);
+    //     exit(0);
+    //     }
+    // }
+
+    // if (!bg) {   /* parent waits for fg job to terminate */
+    //        int status;
+    // if (waitpid(pid, &status, 0) < 0)
+    //     unix_error("waitfg: waitpid error");
+    // }
+    // else         /* otherwise, don’t wait for bg job */
+    //     printf("%d %s", pid, cmdline);
+    // }
+
+    //--------
+
     return;
+
 }
 
 /* 
