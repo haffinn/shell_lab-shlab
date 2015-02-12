@@ -174,34 +174,35 @@ int main(int argc, char **argv)
  */
 void eval(char *cmdline) 
 {
-    // KODI UR GLAERUM FRA FREYSTEINI: 
+    char *argv[MAXARGS]; /* argv for execve() */
+    int bg;              /* should the job run in bg or fg? */
+    pid_t pid;           /* process id */
 
-    // char *argv[MAXARGS]; /* argv for execve() */
-    // int bg;              /* should the job run in bg or fg? */
-    // pid_t pid;           /* process id */
+    /* Parse the command line and build the argv array. */
+    bg = parseline(cmdline, argv);
 
-    // bg = parseline(cmdline, argv); 
-    // if (!builtin_command(argv)) { 
-    // if ((pid = Fork()) == 0) {   /* child runs user job */
-    //     if (execve(argv[0], argv, environ) < 0) {
-    //     printf("%s: Command not found.\n", argv[0]);
-    //     exit(0);
-    //     }
-    // }
+    //if(bg == -1) return;
+    //if(argv[0] == NULL) return;   //ignore empty lines
+ 
+    //fork a child process if command is not built in
+    if(!builtin_cmd(argv)) { 
+    	if ((pid = fork()) == 0) {   /* child runs user job */
+       		if (execve(argv[0], argv, environ) < 0) {
+                	printf("%s: Command not found.\n", argv[0]);
+                 	exit(0);
+            	}
+        }
 
-    // if (!bg) {   /* parent waits for fg job to terminate */
-    //        int status;
-    // if (waitpid(pid, &status, 0) < 0)
-    //     unix_error("waitfg: waitpid error");
-    // }
-    // else         /* otherwise, don’t wait for bg job */
-    //     printf("%d %s", pid, cmdline);
-    // }
 
-    //--------
-
+    	if(!bg) {   /* parent waits for fg job to terminate */
+       		int status;
+        	if (waitpid(pid, &status, 0) < 0)
+                	unix_error("waitfg: waitpid error");
+        }
+        else         /* otherwise, don’t wait for bg job */
+        	printf("%d %s", pid, cmdline);
+    }
     return;
-
 }
 
 /* 
@@ -264,13 +265,15 @@ int parseline(const char *cmdline, char **argv)
     return bg;
 }
 
-/* 
- * builtin_cmd - If the user has typed a built-in command then execute
+/* builtin_cmd - If the user has typed a built-in command then execute
  *    it immediately.  
  */
 int builtin_cmd(char **argv) 
 {
-    return 0;     /* not a builtin command */
+    printf("argv[0]: %s\n",argv[0]);
+    printf("argv[1]: %s\n",argv[1]);
+
+    return 1;     /* not a builtin command */
 }
 
 /* 
