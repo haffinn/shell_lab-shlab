@@ -310,23 +310,23 @@ void do_bgfg(char **argv)
     }
 
     if (argv[0] == '%') { /* If user enters a job ID */
-        jid = strtol(&arg[2]);
+        jid = atoi(&arg[2]);
 
         if (!isdigit(jid)) {
-            printf("%s: must be a PID or JID\n", arg[0]);
+            printf("%s: must be a PID or JID\n", arg);
             return;
         }
 
         if (!(jobs = getjobjid(jobs, jid))) {
-            printf("%s: No such job\n", arg[0]); // Unnessecery??
+            printf("%s: No such job\n", arg); // Unnessecery??
             return;
         }
     }
     else if (isdigit(arg[0])) {
-        pid = strtol(&arg[0]);
+        pid = atoi(&arg[0]);
 
         if (!(jobs = getjobpid(jobs, pid))) {
-            printf("%s: No such process number\n", arg[0])
+            printf("%s: No such process number\n", arg);
             return;
         }
     }
