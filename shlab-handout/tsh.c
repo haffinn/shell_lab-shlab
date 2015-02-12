@@ -309,7 +309,7 @@ void do_bgfg(char **argv)
         return;
     }
 
-    if (argv[0] == '%') { /* If user enters a job ID */
+    if (arg[0] == '%') { /* If user enters a job ID */
         jid = atoi(&arg[2]);
 
         if (!isdigit(jid)) {
@@ -342,7 +342,7 @@ void do_bgfg(char **argv)
     pid = jobs->pid;
     jid = jobs->jid;
 
-    if (strcmp)
+    // if (strcmp)
 
     return;
 }
