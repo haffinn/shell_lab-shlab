@@ -280,9 +280,19 @@ int builtin_cmd(char **argv)
     // printf("argv[0]: %s\n",argv[0]);
     // printf("argv[1]: %s\n",argv[1]);
 
-    if (!strcmp(arg))
+    if (!strcmp(argv[0], "quit")) {
+        exit(0);
+    }
+    else if (!strcmp(argv[0], "bg") || !strcmp(argv[0], "fg")) {
+        do_bgfg(argv);
+        return 1;
+    }
+    else if (!strcmp(argv[0], "jobs")) {
+        listjobs(jobs);
+        return 1;
+    }
 
-    return 1;     /* not a builtin command */
+    return 0;     /* not a builtin command */
 }
 
 /* 
