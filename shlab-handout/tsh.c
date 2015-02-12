@@ -201,13 +201,13 @@ void eval(char *cmdline)
                     unix_error("waitfg: waitpid error");
             }
             addjob(jobs, pid, FG, cmdline);
-            waitpid(pid);
+            waitfg(pid);
 
         }
         else         /* otherwise, don’t wait for bg job */
             // printf("%d %s", pid, cmdline);
         addjob(jobs, pid, BG, cmdline);
-        printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Otharfi?
+        printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
     }
     return;
 }
@@ -277,8 +277,10 @@ int parseline(const char *cmdline, char **argv)
  */
 int builtin_cmd(char **argv) 
 {
-    printf("argv[0]: %s\n",argv[0]);
-    printf("argv[1]: %s\n",argv[1]);
+    // printf("argv[0]: %s\n",argv[0]);
+    // printf("argv[1]: %s\n",argv[1]);
+
+    if (!strcmp(arg))
 
     return 1;     /* not a builtin command */
 }
