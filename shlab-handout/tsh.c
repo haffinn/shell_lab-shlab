@@ -331,7 +331,7 @@ void do_bgfg(char **argv)
         }
     }
     else {
-        printf("%s: must be a PID or JID\n", arg[0]);
+        printf("%s: must be a PID or JID\n", arg);
         return;
     }
 
