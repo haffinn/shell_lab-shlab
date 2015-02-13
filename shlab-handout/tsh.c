@@ -376,21 +376,11 @@ void do_bgfg(char **argv)
  */
 void waitfg(pid_t pid)
 {
-<<<<<<< HEAD
-   //  struct job_t *job = getjobpid(jobs, pid);
+
+    // struct job_t *job = getjobpid(jobs, pid);
      while (pid == fgpid(jobs)) {
          sleep(0.1);
      }
-
-    //while (job->state == FG) {
-    //    sleep(0.1);
-    //}
-=======
-    // struct job_t *job = getjobpid(jobs, pid);
-    while (pid == fgpid(jobs)) {
-        sleep(0.1);
-    }
->>>>>>> 2f4ca0e7fc96a56ecb0373e0a14fc20b9138170a
 
     // while (job->state == FG) {
     //     sleep(0.1);
