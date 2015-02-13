@@ -187,27 +187,28 @@ void eval(char *cmdline)
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
         if ((pid = fork()) == 0) {   /* child runs user job */
-        setpgid(0,0);
+            //setpgid(0,0);
             if (execve(argv[0], argv, environ) < 0) {
                     printf("%s: Command not found.\n", argv[0]);
                     exit(0);
                 }
         }
-
+	//addjob
 
         if(!bg) {   /* parent waits for fg job to terminate */
-            int status;
-            if (waitpid(pid, &status, 0) < 0) {
-                    unix_error("waitfg: waitpid error");
-            }
+            //int status;
             addjob(jobs, pid, FG, cmdline);
+            //if (waitpid(pid, &status, 0) < 0) {
+            //        unix_error("waitfg: waitpid error");
+            // }
             waitfg(pid);
 
         }
-        else         /* otherwise, don’t wait for bg job */
+        else{         /* otherwise, don’t wait for bg job */
             // printf("%d %s", pid, cmdline);
-        addjob(jobs, pid, BG, cmdline);
-        printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
+            addjob(jobs, pid, BG, cmdline);
+            printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
+	}
     }
     return;
 }
