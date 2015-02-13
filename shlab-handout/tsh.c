@@ -201,8 +201,8 @@ void eval(char *cmdline)
             //if (waitpid(pid, &status, 0) < 0) {
             //        unix_error("waitfg: waitpid error");
             // }
-            //waitfg(pid);
-            wait(NULL);
+            waitfg(pid);
+            //wait(NULL);
 
         }
         else{         /* otherwise, don’t wait for bg job */
@@ -303,7 +303,7 @@ int builtin_cmd(char **argv)
 void do_bgfg(char **argv) 
 {
     char *arg = argv[1];
-    struct job_t *jobs;
+    struct job_t *job;
     int pid;
     int jid;
 
@@ -319,7 +319,7 @@ void do_bgfg(char **argv)
             return;
         }
 
-        if (!(jobs = getjobjid(jobs, jid))) {
+        if (!(job = getjobjid(job, jid))) {
             printf("%s: No such job - info #2\n", arg); // Unnessecery??
             return;
         }
@@ -327,7 +327,7 @@ void do_bgfg(char **argv)
     else if (isdigit(arg[0])) {
         pid = atoi(&arg[0]);
 
-        if (!(jobs = getjobpid(jobs, pid))) {
+        if (!(job = getjobpid(job, pid))) {
             printf("%s: No such process number - info #3\n", arg);
             return;
         }
@@ -337,7 +337,7 @@ void do_bgfg(char **argv)
         return;
     }
 
-    if (jobs == NULL) {
+    if (job == NULL) {
         return;
     }
 
@@ -396,6 +396,13 @@ void waitfg(pid_t pid)
  */
 void sigchld_handler(int sig) 
 {
+    pid_t pid; 
+    int status;
+
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        deletejob(jobs, pid);  
+    }
+
     return;
 }
 
