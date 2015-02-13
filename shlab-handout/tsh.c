@@ -315,25 +315,25 @@ void do_bgfg(char **argv)
         jid = atoi(&arg[2]);
 
         if (!isdigit(jid)) {
-            printf("%s: must be a PID or JID - info #1\n", arg);
+            printf("%s: No such job - info #1\n", arg);
             return;
         }
 
-        if (!(job = getjobjid(job, jid))) {
+        if (!(job = getjobjid(jobs, jid))) {
             printf("%s: No such job - info #2\n", arg); // Unnessecery??
             return;
         }
     }
-    else if (isdigit(arg[0])) {
+    else if (isdigit(arg[1])) {
         pid = atoi(&arg[0]);
 
-        if (!(job = getjobpid(job, pid))) {
-            printf("%s: No such process number - info #3\n", arg);
+        if (!(job = getjobpid(jobs, pid))) {
+            printf("%s: No such process - info #3\n", arg);
             return;
         }
     }
     else {
-        printf("%s: must be a PID or JID - info #4\n", arg);
+        printf("%s: argument must be a PID or %%jobid argument - info #4\n", arg);
         return;
     }
 
@@ -376,7 +376,7 @@ void do_bgfg(char **argv)
  */
 void waitfg(pid_t pid)
 {
-    struct job_t *job = getjobpid(jobs pid);
+    struct job_t *job = getjobpid(jobs, pid);
     // while (pid == fgpid(jobs)) {
     //     sleep(0.1);
     // }
