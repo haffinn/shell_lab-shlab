@@ -197,7 +197,7 @@ void eval(char *cmdline)
 
         if(!bg) {   /* parent waits for fg job to terminate */
             //int status;
-            //addjob(jobs, pid, FG, cmdline);
+            addjob(jobs, pid, FG, cmdline);
             //if (waitpid(pid, &status, 0) < 0) {
             //        unix_error("waitfg: waitpid error");
             // }
@@ -207,9 +207,9 @@ void eval(char *cmdline)
         }
         else{         /* otherwise, don’t wait for bg job */
             // printf("%d %s", pid, cmdline);
-            //addjob(jobs, pid, BG, cmdline);
-            //printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
-	}
+            addjob(jobs, pid, BG, cmdline);
+            printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
+        }
     }
     return;
 }
@@ -376,7 +376,12 @@ void do_bgfg(char **argv)
  */
 void waitfg(pid_t pid)
 {
-    while (pid == fgpid(jobs)) {
+    struct job_t *job = getjobpid(jobs pid);
+    // while (pid == fgpid(jobs)) {
+    //     sleep(0.1);
+    // }
+
+    while (job->state == FG) {
         sleep(0.1);
     }
 
