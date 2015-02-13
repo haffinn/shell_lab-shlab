@@ -200,13 +200,13 @@ void eval(char *cmdline)
             if (waitpid(pid, &status, 0) < 0) {
                     unix_error("waitfg: waitpid error");
             }
-            addjob(jobs, pid, FG, cmdline);
+            addjob(jobs, pid, fg, cmdline);
             waitfg(pid);
 
         }
         else         /* otherwise, don’t wait for bg job */
             // printf("%d %s", pid, cmdline);
-        addjob(jobs, pid, BG, cmdline);
+        addjob(jobs, pid, bg, cmdline);
         printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
     }
     return;
@@ -342,7 +342,7 @@ void do_bgfg(char **argv)
     pid = jobs->pid;
     jid = jobs->jid;
 
-    // if (strcmp)
+    if (strcmp(argv[]))
 
     return;
 }
