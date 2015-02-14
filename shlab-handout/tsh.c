@@ -442,19 +442,19 @@ void sigchld_handler(int sig)
             struct job_t * tmpPID;
             tmpPID = getjobpid(jobs, pid);
             tmpPID->state = ST;
-            printf("[%d] Trolllolol message #1\n", pid2jid(pid));
+            printf("Job [%d] (*PID*) stopped by signal 20\n", pid2jid(pid));
             fflush(stdout);
         }
         else if (WIFSIGNALED(curStatus)) {
             // This is when a user enters Ctrl+c
             if (deletejob(jobs, pid) < 1) {
-                unix_error("Deleting a process in sigchld failed LOL message #3");
+                unix_error("Deleting a process in sigchld failed");
             }
-            printf("Job [%d] (%d) terminated by signal %d message #2\n", pid2jid(pid), pid, WTERMSIG(curStatus));
+            printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(curStatus));
             fflush(stdout);
         }
         else {
-            printf("Trolllolol message #4\n");
+            printf("message #4\n");
             fflush(stdout);
         }
 
