@@ -429,6 +429,7 @@ void sigchld_handler(int sig)
         }
         else if (WIFSTOPPED(status))
         {
+            struct job_t * tmpPID;
             tmpPID = getjobpid(jobs, pid);
             tmpPID->state = ST;
             printf("[%d] Trolllolol\n", pid2jid(pid));
