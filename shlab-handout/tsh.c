@@ -329,12 +329,12 @@ void do_bgfg(char **argv)
     if (*argv[1] == '%') { /* If user enters a job ID */
         jid = atoi(&arg[1]);
 
-        //temp debug
-        printf("nice #1\n");
-        fflush(stdout);
+        // //temp debug
+        // printf("nice #1\n");
+        // fflush(stdout);
 
         if (!isdigit(jid) | !(job = getjobjid(jobs, jid))) {
-            printf("%s: No such job - nice #2\n", arg);
+            printf("%s: No such job\n", arg);
             fflush(stdout);
             return;
         }
@@ -347,17 +347,17 @@ void do_bgfg(char **argv)
     }
     else if (isdigit(*argv[1])) {
         pid = atoi(&arg[0]);
-        printf("nice #3\n");
-        fflush(stdout);
+        // printf("nice #3\n");
+        // fflush(stdout);
 
         if (!(job = getjobpid(jobs, pid))) {
-            printf("(%s): No such process - nice #5\n", arg);
+            printf("(%s): No such process\n", arg);
             fflush(stdout);
             return;
         }
     }
     else { //if (!isdigit(arg[1])) {
-        printf("%s: argument must be a PID or %%jobid - nice #6\n", arg);
+        printf("%s: argument must be a PID or %%jobid\n", arg);
         fflush(stdout);
         return;
     }
