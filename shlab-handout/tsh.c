@@ -333,7 +333,7 @@ void do_bgfg(char **argv)
         // printf("nice #1\n");
         // fflush(stdout);
 
-        if (!isdigit(jid) | !(job = getjobjid(jobs, jid))) {
+        if (!isdigit(arg[1]) | !(job = getjobjid(jobs, jid))) {
             printf("%s: No such job\n", arg);
             fflush(stdout);
             return;
