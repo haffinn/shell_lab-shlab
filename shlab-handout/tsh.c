@@ -315,22 +315,22 @@ int builtin_cmd(char **argv)
  */
 void do_bgfg(char **argv) 
 {
-    //char *arg = argv[1];
+    char *arg = argv[0];
     struct job_t *job;
     int pid;
     int jid;
 
-    if (*argv == NULL) {
-        printf("%s command requires PID or %%jobid argument\n", argv[0]);
+    if (arg == NULL) {
+        printf("%s command requires PID or %%jobid argument\n", arg[0]);
         fflush(stdout);
         return;
     }
 
-    if (&argv[1] == '%') { /* If user enters a job ID */
-        jid = atoi(&argv[2]);
+    if (arg[1] == '%') { /* If user enters a job ID */
+        jid = atoi(&arg[2]);
 
         if (!isdigit(jid) | !(job = getjobjid(jobs, jid))) {
-            printf("%s: No such job\n", *argv);
+            printf("%s: No such job\n", arg[0]);
             fflush(stdout);
             return;
         }
@@ -341,17 +341,17 @@ void do_bgfg(char **argv)
         //     return;
         // }
     }
-    else if (isdigit(argv[1])) {
-        pid = atoi(&argv[1]);
+    else if (isdigit(arg[1])) {
+        pid = atoi(&arg[1]);
 
         if (!(job = getjobpid(jobs, pid))) {
-            printf("(%s): No such process\n", *argv);
+            printf("(%s): No such process\n", arg[0]);
             fflush(stdout);
             return;
         }
     }
     else { //if (!isdigit(arg[1])) {
-        printf("%s: argument must be a PID or %%jobid\n", argv[0]);
+        printf("%s: argument must be a PID or %%jobid\n", arg[0]);
         fflush(stdout);
         return;
     }
