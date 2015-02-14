@@ -357,17 +357,17 @@ void do_bgfg(char **argv)
     pid = jobs->pid;
     jid = jobs->jid;
 
-    // if (jobs->state == BG) {
+    // if (job->state == BG) {
     //     if (!strcmp(argv[0], "fg")) {
-    //         jobs->state = FG;
-    //         waitfg(jobs->pid);
+    //         job->state = FG;
+    //         waitfg(job->pid);
     //     }
     // }
-    // else if (jobs->state == ST) {
+    // else if (job->state == ST) {
 
     //     if (!strcmp(argv[0], "fg")) {
-    //         jobs->state = FG;
-    //         wait
+    //         job->state = FG;
+    //         wait....
     //     }
     // }
 
@@ -418,10 +418,13 @@ void sigchld_handler(int sig)
     pid_t pid; 
     int status;
 
-    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        deletejob(jobs, pid);  
-    }
+    /* the wuntraced and wnohang return either 0 if no children have stopped
+        or the PID of the child that stopped or terminated */
+    while ((pid = waitpid(-1, &status, WUNTRACED | WNOHANG)) > 0) {
+         deletejob(jobs, pid);  
 
+    }
+    // Baeta vid mismunandi error messegum eftir status..
     return;
 }
 
