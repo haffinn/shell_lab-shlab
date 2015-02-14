@@ -356,8 +356,8 @@ void do_bgfg(char **argv)
         return;
     }
 
-    pid = jobs->pid;
-    jid = jobs->jid;
+    pid = job->pid;
+    jid = job->jid;
 
     // if (job->state == BG) {
     //     if (!strcmp(argv[0], "fg")) {
@@ -375,12 +375,12 @@ void do_bgfg(char **argv)
 
     if (!strcmp(argv[0], "fg")) {
         kill(-pid, SIGCONT);
-        jobs->state = FG;
+        job->state = FG;
         waitfg(pid);
     }
     else if (!strcmp(argv[0], "bg")) {
         kill(-pid, SIGCONT);
-        jobs->state = BG;
+        job->state = BG;
     }
 
     return;
