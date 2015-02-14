@@ -283,7 +283,7 @@ int builtin_cmd(char **argv)
 {
     // printf("argv[0]: %s\n",argv[0]);
     // printf("argv[1]: %s\n",argv[1]);
-    if (argv[0] == NULL) exit(0);
+    if (argv[0] == NULL) return 0;
 
     if (!strcmp(argv[0], "quit")) {
         exit(0);
