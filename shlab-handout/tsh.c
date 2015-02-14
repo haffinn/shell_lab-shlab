@@ -188,7 +188,7 @@ void eval(char *cmdline)
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
         if ((pid = fork()) == 0) {   /* child runs user job */
-            //setpgid(0,0);
+            setpgid(0,0);
             if (execve(argv[0], argv, environ) < 0) {
                     printf("%s: Command not found\n", argv[0]);
                     fflush(stdout);
