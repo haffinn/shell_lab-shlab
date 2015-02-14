@@ -447,10 +447,11 @@ void sigchld_handler(int sig)
         }
         else if (WIFSIGNALED(curStatus)) {
             // This is when a user enters Ctrl+c
+            printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(curStatus));
             if (deletejob(jobs, pid) < 1) {
                 unix_error("Deleting a process in sigchld failed");
             }
-            printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(curStatus));
+            //printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(curStatus));
             fflush(stdout);
         }
         else {
