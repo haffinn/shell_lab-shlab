@@ -190,7 +190,7 @@ void eval(char *cmdline)
         if ((pid = fork()) == 0) {   /* child runs user job */
             //setpgid(0,0);
             if (execve(argv[0], argv, environ) < 0) {
-                    printf("%s: Command not found.\n", argv[0]);
+                    printf("%s: Command not found\n", argv[0]);
                     fflush(stdout);
                     exit(0);
                 }
@@ -312,7 +312,7 @@ void do_bgfg(char **argv)
     int jid;
 
     if (arg == NULL) {
-        printf("%s command requiers PID or %%jobid argument\n", argv[0]);
+        printf("%s command requires PID or %%jobid argument\n", argv[0]);
         fflush(stdout);
         return;
     }
@@ -336,7 +336,7 @@ void do_bgfg(char **argv)
         pid = atoi(&arg[0]);
 
         if (!(job = getjobpid(jobs, pid))) {
-            printf("%s: No such process\n", arg);
+            printf("(%s): No such process\n", arg);
             fflush(stdout);
             return;
         }
