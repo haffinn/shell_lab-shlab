@@ -429,7 +429,7 @@ void sigint_handler(int sig)
     pid = fgpid(jobs);
 
     if (fgpid(jobs) != 0) {
-        kill (-pid, SIGINT);
+        kill (-pid, sig);
     }
 
     return;
@@ -446,7 +446,7 @@ void sigtstp_handler(int sig)
     pid = fgpid(jobs);
 
     if (fgpid(jobs) != 0) {
-        kill (-pid, SIGSTP);
+        kill (-pid, sig);
     }
 
     return;
