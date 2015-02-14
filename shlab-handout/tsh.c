@@ -224,7 +224,8 @@ void Sigaddset(sigset_t *set, int signum)
 	unix_error("Sigaddset error");
     return;
 }
-  
+/* END of wrapper functions*/
+
 /* 
  * eval - Evaluate the command line that the user has just typed in
  * 
@@ -249,10 +250,8 @@ void eval(char *cmdline)
     /* Parse the command line and build the argv array. */
     bg = parseline(cmdline, argv);
 
-    if (argv[0] == NULL) return;
-    //if(bg == -1) return;
-    // if(argv == 0) return;   //ignore empty lines
- 
+    if (argv[0] == NULL) return; // ignore empty lines
+    
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
         Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
@@ -268,7 +267,6 @@ void eval(char *cmdline)
         }
 
         if(!bg) {   /* parent waits for fg job to terminate */
-            //int status;
             addjob(jobs, pid, FG, cmdline);
             Sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
             waitfg(pid);
@@ -348,6 +346,7 @@ int parseline(const char *cmdline, char **argv)
  */
 int builtin_cmd(char **argv) 
 {
+    // Define built in commands and execute accordingly
     if (!strcmp(argv[0], "quit")) {
         exit(0);
     }
@@ -360,7 +359,7 @@ int builtin_cmd(char **argv)
         return 1;
     }
 
-    return 0;     /* not a builtin command */
+    return 0;     // if not a builtin command, function reaches here
 }
 
 /* 
@@ -373,18 +372,14 @@ void do_bgfg(char **argv)
     int pid;
     int jid;
 
-    if (arg == NULL) {
+    if (arg == NULL) { // if no arguments follow after fg/bg call
         printf("%s command requires PID or %%jobid argument\n", argv[0]);
         fflush(stdout);
         return;
     }
 
-    if (*argv[1] == '%') { /* If user enters a job ID */
+    if (*argv[1] == '%') { // If user enters a job ID
         jid = atoi(&arg[1]);
-
-        // //temp debug
-        // printf("nice #1\n");
-        // fflush(stdout);
 
         if (!isdigit(arg[1]) | !(job = getjobjid(jobs, jid))) {
             printf("%s: No such job\n", arg);
@@ -392,10 +387,8 @@ void do_bgfg(char **argv)
             return;
         }
     }
-    else if (isdigit(*argv[1])) {
+    else if (isdigit(*argv[1])) { // if user enteres a process ID
         pid = atoi(&arg[0]);
-        // printf("nice #3\n");
-        // fflush(stdout);
 
         if (!(job = getjobpid(jobs, pid))) {
             printf("(%s): No such process\n", argv[1]);
@@ -403,16 +396,11 @@ void do_bgfg(char **argv)
             return;
         }
     }
-    else { //if (!isdigit(arg[1])) {
+    else {
         printf("%s: argument must be a PID or %%jobid\n", argv[0]);
         fflush(stdout);
         return;
     }
-    // else {
-    //     printf("%s: command requiers PID or %%jobid argument\n", argv[0]);
-    //     fflush(stdout);
-    //     return;
-    // }
 
     if (job == NULL) {
         return;
@@ -421,26 +409,12 @@ void do_bgfg(char **argv)
     pid = job->pid;
     jid = job->jid;
 
-    // if (job->state == BG) {
-    //     if (!strcmp(argv[0], "fg")) {
-    //         job->state = FG;
-    //         waitfg(job->pid);
-    //     }
-    // }
-    // else if (job->state == ST) {
-
-    //     if (!strcmp(argv[0], "fg")) {
-    //         job->state = FG;
-    //         wait....
-    //     }
-    // }
-
-    if (!strcmp(argv[0], "fg")) {
+    if (!strcmp(argv[0], "fg")) { //if fg is called
         Kill(-pid, SIGCONT);
         job->state = FG;
         waitfg(pid);
     }
-    else if (!strcmp(argv[0], "bg")) {
+    else if (!strcmp(argv[0], "bg")) { //if bg is called
         Kill(-pid, SIGCONT);
         printf("[%d] (%d) %s", jid, pid, job->cmdline);
         job->state = BG;
@@ -455,15 +429,9 @@ void do_bgfg(char **argv)
  */
 void waitfg(pid_t pid)
 {
-
-    // struct job_t *job = getjobpid(jobs, pid);
      while (pid == fgpid(jobs)) {
          sleep(0.1);
      }
-
-    // while (job->state == FG) {
-    //     sleep(0.1);
-    // }
 
     return;
 }
@@ -516,7 +484,6 @@ void sigchld_handler(int sig)
         }
 
     }
-    // Baeta vid mismunandi error messegum eftir status..
     return;
 }
 
