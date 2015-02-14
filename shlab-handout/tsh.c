@@ -315,7 +315,7 @@ int builtin_cmd(char **argv)
  */
 void do_bgfg(char **argv) 
 {
-    char *arg = argv[0];
+    char *arg = argv[1];
     struct job_t *job;
     int pid;
     int jid;
@@ -326,8 +326,8 @@ void do_bgfg(char **argv)
         return;
     }
 
-    if (arg[2] == '%') { /* If user enters a job ID */
-        jid = atoi(&arg[3]);
+    if (*argv[1] == '%') { /* If user enters a job ID */
+        jid = atoi(&arg[1]);
 
         //temp debug
         printf("nice #1\n");
@@ -345,8 +345,8 @@ void do_bgfg(char **argv)
         //     return;
         // }
     }
-    else if (isdigit(arg[2])) {
-        pid = atoi(&arg[2]);
+    else if (isdigit(*argv[1])) {
+        pid = atoi(&arg[0]);
         printf("nice #3\n");
         fflush(stdout);
 
