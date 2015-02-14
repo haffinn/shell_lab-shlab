@@ -421,7 +421,15 @@ void sigchld_handler(int sig)
     /* the wuntraced and wnohang return either 0 if no children have stopped
         or the PID of the child that stopped or terminated */
     while ((pid = waitpid(-1, &status, WUNTRACED | WNOHANG)) > 0) {
-         deletejob(jobs, pid);  
+         // deletejob(jobs, pid);  
+        if (WIFEXITED(status)) {
+            deletejob(jobs,pid);
+        }
+        else if (WIFSTOPPED(status) {
+            tmpPID = getjobpid(jobs, pid);
+            tmpPID->state = ST;
+            printf("[%d] Trolllolol\n", pid2jid(pid) );
+        }
 
     }
     // Baeta vid mismunandi error messegum eftir status..
