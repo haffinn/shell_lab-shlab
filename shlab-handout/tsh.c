@@ -182,7 +182,7 @@ void eval(char *cmdline)
     bg = parseline(cmdline, argv);
 
     //if(bg == -1) return;
-    //if(argv[0] == NULL) return;   //ignore empty lines
+    if(argc == 0) return;   //ignore empty lines
  
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
