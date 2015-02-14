@@ -326,8 +326,8 @@ void do_bgfg(char **argv)
         return;
     }
 
-    if (argv[1] == '%') { /* If user enters a job ID */
-        jid = atoi(&arg[2]);
+    if (&argv[1] == '%') { /* If user enters a job ID */
+        jid = atoi(&argv[2]);
 
         if (!isdigit(jid) | !(job = getjobjid(jobs, jid))) {
             printf("%s: No such job\n", *argv);
