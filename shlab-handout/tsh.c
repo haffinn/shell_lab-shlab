@@ -190,6 +190,7 @@ void eval(char *cmdline)
             //setpgid(0,0);
             if (execve(argv[0], argv, environ) < 0) {
                     printf("%s: Command not found.\n", argv[0]);
+                    fflush(stdout);
                     exit(0);
                 }
         }
@@ -208,7 +209,8 @@ void eval(char *cmdline)
         else{         /* otherwise, don’t wait for bg job */
             // printf("%d %s", pid, cmdline);
             addjob(jobs, pid, BG, cmdline);
-            printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline); // Unnessecery?
+            printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline);
+            fflush(stdout);
         }
     }
     return;
@@ -316,11 +318,13 @@ void do_bgfg(char **argv)
 
         if (!isdigit(jid)) {
             printf("%s: No such job - info #1\n", arg);
+            fflush(stdout);
             return;
         }
 
         if (!(job = getjobjid(jobs, jid))) {
-            printf("%s: No such job - info #2\n", arg); // Unnessecery??
+            printf("%s: No such job - info #2\n", arg);
+            fflush(stdout);
             return;
         }
     }
@@ -329,11 +333,13 @@ void do_bgfg(char **argv)
 
         if (!(job = getjobpid(jobs, pid))) {
             printf("%s: No such process - info #3\n", arg);
+            fflush(stdout);
             return;
         }
     }
     else {
         printf("%s: argument must be a PID or %%jobid argument - info #4\n", arg);
+        fflush(stdout);
         return;
     }
 
@@ -419,6 +425,13 @@ void sigchld_handler(int sig)
  */
 void sigint_handler(int sig) 
 {
+    pid_t pid;
+    pid = fgpid(jobs);
+
+    if (fgpid(jobs) != 0) {
+        kill (-pid, SIGINT);
+    }
+
     return;
 }
 
@@ -429,6 +442,13 @@ void sigint_handler(int sig)
  */
 void sigtstp_handler(int sig) 
 {
+    pid_t pid;
+    pid = fgpid(jobs);
+
+    if (fgpid(jobs) != 0) {
+        kill (-pid, SIGSTP);
+    }
+
     return;
 }
 
