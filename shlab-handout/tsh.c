@@ -429,6 +429,7 @@ void sigchld_handler(int sig)
             deletejob(jobs,pid);
         }
         else if (WIFSTOPPED(curStatus)) {
+            // This is when user enters Ctrl+z
             struct job_t * tmpPID;
             tmpPID = getjobpid(jobs, pid);
             tmpPID->state = ST;
@@ -436,6 +437,7 @@ void sigchld_handler(int sig)
             fflush(stdout);
         }
         else if (WIFSIGNALED(curStatus)) {
+            // This is when a user enters Ctrl+c
             if (deletejob(jobs, pid) < 1) {
                 unix_error("Deleting a process in sigchld failed LOL message #3");
             }
