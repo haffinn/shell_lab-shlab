@@ -326,8 +326,8 @@ void do_bgfg(char **argv)
         return;
     }
 
-    if (arg[1] == '%') { /* If user enters a job ID */
-        jid = atoi(&arg[2]);
+    if (arg[2] == '%') { /* If user enters a job ID */
+        jid = atoi(&arg[3]);
 
         //temp debug
         printf("nice #1\n");
@@ -345,8 +345,8 @@ void do_bgfg(char **argv)
         //     return;
         // }
     }
-    else if (isdigit(arg[1])) {
-        pid = atoi(&arg[1]);
+    else if (isdigit(arg[2])) {
+        pid = atoi(&arg[2]);
         printf("nice #3\n");
         fflush(stdout);
 
