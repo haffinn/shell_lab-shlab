@@ -334,7 +334,7 @@ void do_bgfg(char **argv)
         // fflush(stdout);
 
         if (!isdigit(arg[1]) | !(job = getjobjid(jobs, jid))) {
-            printf("%s: No such job\n", argv[0]);
+            printf("%s: No such job\n", arg);
             fflush(stdout);
             return;
         }
@@ -351,13 +351,13 @@ void do_bgfg(char **argv)
         // fflush(stdout);
 
         if (!(job = getjobpid(jobs, pid))) {
-            printf("(%s): No such process\n", arg);
+            printf("(%s): No such process\n", argv[1]);
             fflush(stdout);
             return;
         }
     }
     else { //if (!isdigit(arg[1])) {
-        printf("%s: argument must be a PID or %%jobid\n", arg);
+        printf("%s: argument must be a PID or %%jobid\n", argv[0]);
         fflush(stdout);
         return;
     }
