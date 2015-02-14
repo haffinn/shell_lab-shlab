@@ -434,7 +434,7 @@ void sigchld_handler(int sig)
             fflush(stdout);
         }
         else if (WIFSIGNALED(curStatus)) {
-            if ((deletejob(jobs, pid) < 1) {
+            if ((deletejob(jobs, pid) < 1)) {
                 unix_error("Deleting a process in sigchld failed LOL message #3")
             }
             printf("Job [%d] (%d) terminated by signal %d message #2\n", pid2jid(pid), pid, WTERMSIG(curStatus));
