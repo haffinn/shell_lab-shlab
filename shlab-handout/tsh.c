@@ -191,7 +191,7 @@ void eval(char *cmdline)
  
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
-        Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
+        sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
 
         if ((pid = fork()) == 0) {   /* child runs user job */
             setpgid(0,0);
