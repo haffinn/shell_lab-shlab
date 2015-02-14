@@ -378,37 +378,43 @@ int builtin_cmd(char **argv)
  */
 void do_bgfg(char **argv) 
 {
-    char *arg = argv[0];
+    char *arg = argv[1];
     struct job_t *job;
     int pid;
     int jid;
 
     if (arg == NULL) {
-        printf("%s command requires PID or %%jobid argument\n", arg);
+        printf("%s command requires PID or %%jobid argument\n", argv[0]);
         fflush(stdout);
         return;
     }
 
-    if (arg[1] == '%') { /* If user enters a job ID */
-        jid = atoi(&arg[2]);
+    if (*argv[1] == '%') { /* If user enters a job ID */
+        jid = atoi(&arg[1]);
 
-        if (!isdigit(jid) | !(job = getjobjid(jobs, jid))) {
+        // //temp debug
+        // printf("nice #1\n");
+        // fflush(stdout);
+
+        if (!isdigit(arg[1]) | !(job = getjobjid(jobs, jid))) {
             printf("%s: No such job\n", arg);
             fflush(stdout);
             return;
         }
     }
-    else if (isdigit(arg[1])) {
-        pid = atoi(&arg[1]);
+    else if (isdigit(*argv[1])) {
+        pid = atoi(&arg[0]);
+        // printf("nice #3\n");
+        // fflush(stdout);
 
         if (!(job = getjobpid(jobs, pid))) {
-            printf("(%s): No such process\n", arg);
+            printf("(%s): No such process\n", argv[1]);
             fflush(stdout);
             return;
         }
     }
     else { //if (!isdigit(arg[1])) {
-        printf("%s: argument must be a PID or %%jobid\n", arg);
+        printf("%s: argument must be a PID or %%jobid\n", argv[0]);
         fflush(stdout);
         return;
     }
@@ -446,7 +452,9 @@ void do_bgfg(char **argv)
     }
     else if (!strcmp(argv[0], "bg")) {
         kill(-pid, SIGCONT);
+        printf("[%d] (%d) %s", jid, pid, job->cmdline);
         job->state = BG;
+        fflush(stdout);
     }
 
     return;
@@ -499,7 +507,7 @@ void sigchld_handler(int sig)
             struct job_t * tmpPID;
             tmpPID = getjobpid(jobs, pid);
             tmpPID->state = ST;
-            printf("Job [%d] (*PID*) stopped by signal 20\n", pid2jid(pid));
+            printf("Job [%d] (%d) stopped by signal %d\n", pid2jid(pid), pid, WSTOPSIG(curStatus));
             fflush(stdout);
         }
         else if (WIFSIGNALED(curStatus)) {
@@ -512,8 +520,9 @@ void sigchld_handler(int sig)
             fflush(stdout);
         }
         else {
-            printf("message #4\n");
-            fflush(stdout);
+            if((deletejob(jobs, pid)) < 1) {
+                unix_error("Deleting failed");
+            }
         }
 
     }
