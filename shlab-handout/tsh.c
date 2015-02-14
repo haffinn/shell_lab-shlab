@@ -177,6 +177,10 @@ void eval(char *cmdline)
     char *argv[MAXARGS]; /* argv for execve() */
     int bg;              /* should the job run in bg or fg? */
     pid_t pid;           /* process id */
+    sigset_t mask;       /* signal mask */
+
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGCHLD);
 
     /* Parse the command line and build the argv array. */
     bg = parseline(cmdline, argv);
@@ -187,6 +191,8 @@ void eval(char *cmdline)
  
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
+        Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
+
         if ((pid = fork()) == 0) {   /* child runs user job */
             setpgid(0,0);
             if (execve(argv[0], argv, environ) < 0) {
@@ -213,6 +219,7 @@ void eval(char *cmdline)
             printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline);
             fflush(stdout);
         }
+        sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
     }
     return;
 }
