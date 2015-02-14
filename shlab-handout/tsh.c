@@ -180,7 +180,7 @@ void eval(char *cmdline)
 
     /* Parse the command line and build the argv array. */
     bg = parseline(cmdline, argv);
-    
+
     if (argv[0] == NULL) return;
     //if(bg == -1) return;
     // if(argv == 0) return;   //ignore empty lines
@@ -463,7 +463,7 @@ void sigint_handler(int sig)
     pid = fgpid(jobs);
 
     if (fgpid(jobs) != 0) {
-        kill (-pid, sig);
+        kill (-pid, SIGINT);
     }
 
     return;
@@ -480,7 +480,7 @@ void sigtstp_handler(int sig)
     pid = fgpid(jobs);
 
     if (fgpid(jobs) != 0) {
-        kill (-pid, sig);
+        kill (-pid, SIGTSTP);
     }
 
     return;
