@@ -180,7 +180,8 @@ void eval(char *cmdline)
 
     /* Parse the command line and build the argv array. */
     bg = parseline(cmdline, argv);
-
+    
+    if (argv[0] == NULL) return;
     //if(bg == -1) return;
     // if(argv == 0) return;   //ignore empty lines
  
@@ -283,7 +284,7 @@ int builtin_cmd(char **argv)
 {
     // printf("argv[0]: %s\n",argv[0]);
     // printf("argv[1]: %s\n",argv[1]);
-    if (argv[0] == NULL) return 0;
+    // if (argv[0] == NULL) return 0;
 
     if (!strcmp(argv[0], "quit")) {
         exit(0);
