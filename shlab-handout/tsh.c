@@ -445,7 +445,7 @@ void sigchld_handler(int sig)
             fflush(stdout);
         }
         else {
-            printf("Trolllolol message #3\n");
+            printf("Trolllolol message #4\n");
             fflush(stdout);
         }
 
