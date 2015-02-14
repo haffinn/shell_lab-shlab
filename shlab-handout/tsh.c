@@ -422,7 +422,7 @@ void sigchld_handler(int sig)
 
     /* the wuntraced and wnohang return either 0 if no children have stopped
         or the PID of the child that stopped or terminated */
-    while ((pid = waitpid(-1, &curStatus, WUNTRACED | WNOHANG)) > 0) 
+    while ((pid = waitpid(-1, &curStatus, WUNTRACED | WNOHANG) > 0)) 
     {
          // deletejob(jobs, pid);  
         if (WIFEXITED(curStatus)) {
