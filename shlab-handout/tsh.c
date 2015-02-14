@@ -93,6 +93,17 @@ void app_error(char *msg);
 typedef void handler_t(int);
 handler_t *Signal(int signum, handler_t *handler);
 
+/* Wrapper functions for error handling */
+
+pid_t Fork(void);
+pid_t Waitpid(pid_t pid, int *iptr, int options);
+void Kill(pid_t pid, int signum);
+void Setpgid(pid_t pid, pid_t pgid);
+void Sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
+void Sigemptyset(sigset_t *set);
+void Sigfillset(sigset_t *set);
+void Sigaddset(sigset_t *set, int signum);   
+
 /*
  * main - The shell's main routine 
  */
@@ -160,6 +171,69 @@ int main(int argc, char **argv)
 
     exit(0); /* control never reaches here */
 }
+
+/* Wrapper functions for error handling */
+pid_t Fork(void) 
+{
+    pid_t pid;
+
+    if ((pid = fork()) < 0)
+	unix_error("Fork error");
+    return pid;
+}
+
+pid_t Waitpid(pid_t pid, int *iptr, int options) 
+{
+    pid_t retpid;
+
+    if ((retpid  = waitpid(pid, iptr, options)) < 0) 
+	unix_error("Waitpid error");
+    return(retpid);
+}
+
+void Kill(pid_t pid, int signum) 
+{
+    int rc;
+
+    if ((rc = kill(pid, signum)) < 0)
+	unix_error("Kill error");
+}
+
+void Setpgid(pid_t pid, pid_t pgid) {
+    int rc;
+
+    if ((rc = setpgid(pid, pgid)) < 0)
+	unix_error("Setpgid error");
+    return;
+}
+
+void Sigprocmask(int how, const sigset_t *set, sigset_t *oldset)
+{
+    if (sigprocmask(how, set, oldset) < 0)
+	unix_error("Sigprocmask error");
+    return;
+}
+
+void Sigemptyset(sigset_t *set)
+{
+    if (sigemptyset(set) < 0)
+	unix_error("Sigemptyset error");
+    return;
+}
+
+void Sigfillset(sigset_t *set)
+{ 
+    if (sigfillset(set) < 0)
+	unix_error("Sigfillset error");
+    return;
+}
+
+void Sigaddset(sigset_t *set, int signum)
+{
+    if (sigaddset(set, signum) < 0)
+	unix_error("Sigaddset error");
+    return;
+}
   
 /* 
  * eval - Evaluate the command line that the user has just typed in
@@ -179,8 +253,8 @@ void eval(char *cmdline)
     pid_t pid;           /* process id */
     sigset_t mask;       /* signal mask */
 
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGCHLD);
+    Sigemptyset(&mask);
+    Sigaddset(&mask, SIGCHLD);
 
     /* Parse the command line and build the argv array. */
     bg = parseline(cmdline, argv);
@@ -191,34 +265,27 @@ void eval(char *cmdline)
  
     //fork a child process if command is not built in
     if(!builtin_cmd(argv)) { 
-        sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
+        Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
 
-        if ((pid = fork()) == 0) {   /* child runs user job */
+        if ((pid = Fork()) == 0) {   /* child runs user job */
             setpgid(0,0);
-            sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
+            Sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
             if (execve(argv[0], argv, environ) < 0) {
                     printf("%s: Command not found\n", argv[0]);
                     fflush(stdout);
                     exit(0);
                 }
         }
-	//addjob
 
         if(!bg) {   /* parent waits for fg job to terminate */
             //int status;
             addjob(jobs, pid, FG, cmdline);
-            sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
-            //if (waitpid(pid, &status, 0) < 0) {
-            //        unix_error("waitfg: waitpid error");
-            // }
+            Sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
             waitfg(pid);
-            //wait(NULL);
-
         }
         else{         /* otherwise, don’t wait for bg job */
-            // printf("%d %s", pid, cmdline);
             addjob(jobs, pid, BG, cmdline);
-            sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
+            Sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
             printf("[%d] (%d) %s", pid2jid(pid), pid, cmdline);
             fflush(stdout);
         }
@@ -291,10 +358,6 @@ int parseline(const char *cmdline, char **argv)
  */
 int builtin_cmd(char **argv) 
 {
-    // printf("argv[0]: %s\n",argv[0]);
-    // printf("argv[1]: %s\n",argv[1]);
-    // if (argv[0] == NULL) return 0;
-
     if (!strcmp(argv[0], "quit")) {
         exit(0);
     }
@@ -334,12 +397,6 @@ void do_bgfg(char **argv)
             fflush(stdout);
             return;
         }
-
-        // if (!(job = getjobjid(jobs, jid))) {
-        //     printf("%s: No such job - info #2\n", arg);
-        //     fflush(stdout);
-        //     return;
-        // }
     }
     else if (isdigit(arg[1])) {
         pid = atoi(&arg[1]);
@@ -431,7 +488,7 @@ void sigchld_handler(int sig)
 
     /* the wuntraced and wnohang return either 0 if no children have stopped
         or the PID of the child that stopped or terminated */
-    while ((pid = waitpid(-1, &curStatus, WUNTRACED | WNOHANG)) > 0) 
+    while ((pid = Waitpid(-1, &curStatus, WUNTRACED | WNOHANG)) > 0) 
     {
          // deletejob(jobs, pid);  
         if (WIFEXITED(curStatus)) {
