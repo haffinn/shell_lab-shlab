@@ -416,23 +416,32 @@ void waitfg(pid_t pid)
 void sigchld_handler(int sig) 
 {
     pid_t pid; 
-    int status;
+    int curStatus;
 
     /* the wuntraced and wnohang return either 0 if no children have stopped
         or the PID of the child that stopped or terminated */
     while ((pid = waitpid(-1, &status, WUNTRACED | WNOHANG)) > 0) 
     {
          // deletejob(jobs, pid);  
-        if (WIFEXITED(status)) 
-        {
+        if (WIFEXITED(curStatus)) {
             deletejob(jobs,pid);
         }
-        else if (WIFSTOPPED(status))
-        {
+        else if (WIFSTOPPED(curStatus)) {
             struct job_t * tmpPID;
             tmpPID = getjobpid(jobs, pid);
             tmpPID->state = ST;
-            printf("[%d] Trolllolol\n", pid2jid(pid));
+            printf("[%d] Trolllolol message #1\n", pid2jid(pid));
+            fflush(stdout);
+        }
+        else if (WIFSIGNALED(curStatus)) {
+            if ((deletejob(jobs, pid)) < 1) {
+                unix_error("Deleting a process in sigchld failed LOL message #3")
+            }
+            printf("Job [%d] (%d) terminated by signal %d message #2\n", pid2jid(pid), pid, WTERMSIG(curStatus));
+            fflush(stdout);
+        }
+        else {
+            printf("Trolllolol message #3\n", );
             fflush(stdout);
         }
 
