@@ -4,7 +4,7 @@
  * You __MUST__ add your user information here below
  * 
  * === User information ===
- * Group: Kaerofaggarnir!
+ * Group: There is no place like 127.0.0.1
  * User 1: hafthort12
  * SSN: 220492-2819
  * User 2: hrafnkell13
