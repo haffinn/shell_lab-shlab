@@ -310,7 +310,7 @@ void do_bgfg(char **argv)
     int jid;
 
     if (arg == NULL) {
-        printf("%s: command requiers PID or %%jobid argument\n", argv[0]);
+        printf("%s command requiers PID or %%jobid argument\n", argv[0]);
         fflush(stdout);
         return;
     }
