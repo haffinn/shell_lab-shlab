@@ -96,7 +96,6 @@ handler_t *Signal(int signum, handler_t *handler);
 /* Wrapper functions for error handling */
 
 pid_t Fork(void);
-pid_t Waitpid(pid_t pid, int *iptr, int options);
 void Kill(pid_t pid, int signum);
 void Setpgid(pid_t pid, pid_t pgid);
 void Sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
@@ -182,15 +181,6 @@ pid_t Fork(void)
     return pid;
 }
 
-pid_t Waitpid(pid_t pid, int *iptr, int options) 
-{
-    pid_t retpid;
-
-    if ((retpid  = waitpid(pid, iptr, options)) < 0) 
-	unix_error("Waitpid error");
-    return(retpid);
-}
-
 void Kill(pid_t pid, int signum) 
 {
     int rc;
@@ -268,7 +258,7 @@ void eval(char *cmdline)
         Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD for parent
 
         if ((pid = Fork()) == 0) {   /* child runs user job */
-            setpgid(0,0);
+            Setpgid(0,0);
             Sigprocmask(SIG_UNBLOCK, &mask, NULL); // unblocks SIGCHLD signals
             if (execve(argv[0], argv, environ) < 0) {
                     printf("%s: Command not found\n", argv[0]);
@@ -446,12 +436,12 @@ void do_bgfg(char **argv)
     // }
 
     if (!strcmp(argv[0], "fg")) {
-        kill(-pid, SIGCONT);
+        Kill(-pid, SIGCONT);
         job->state = FG;
         waitfg(pid);
     }
     else if (!strcmp(argv[0], "bg")) {
-        kill(-pid, SIGCONT);
+        Kill(-pid, SIGCONT);
         printf("[%d] (%d) %s", jid, pid, job->cmdline);
         job->state = BG;
         fflush(stdout);
@@ -496,7 +486,7 @@ void sigchld_handler(int sig)
 
     /* the wuntraced and wnohang return either 0 if no children have stopped
         or the PID of the child that stopped or terminated */
-    while ((pid = Waitpid(-1, &curStatus, WUNTRACED | WNOHANG)) > 0) 
+    while ((pid = waitpid(-1, &curStatus, WUNTRACED | WNOHANG)) > 0) 
     {
          // deletejob(jobs, pid);  
         if (WIFEXITED(curStatus)) {
@@ -541,7 +531,7 @@ void sigint_handler(int sig)
     pid = fgpid(jobs);
 
     if (fgpid(jobs) != 0) {
-        kill (-pid, SIGINT);
+        Kill (-pid, SIGINT);
     }
 
     return;
@@ -558,7 +548,7 @@ void sigtstp_handler(int sig)
     pid = fgpid(jobs);
 
     if (fgpid(jobs) != 0) {
-        kill (-pid, SIGTSTP);
+        Kill (-pid, SIGTSTP);
     }
 
     return;
@@ -780,7 +770,7 @@ handler_t *Signal(int signum, handler_t *handler)
     struct sigaction action, old_action;
 
     action.sa_handler = handler;  
-    sigemptyset(&action.sa_mask); /* block sigs of type being handled */
+    Sigemptyset(&action.sa_mask); /* block sigs of type being handled */
     action.sa_flags = SA_RESTART; /* restart syscalls if possible */
 
     if (sigaction(signum, &action, &old_action) < 0) {
