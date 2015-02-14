@@ -395,7 +395,9 @@ void do_bgfg(char **argv)
     }
     else if (!strcmp(argv[0], "bg")) {
         kill(-pid, SIGCONT);
+        printf("[%d] (%d) %s", jid, pid, job->cmdline);
         job->state = BG;
+        fflush(stdout);
     }
 
     return;
