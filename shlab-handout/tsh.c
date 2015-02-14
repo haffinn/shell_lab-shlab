@@ -310,6 +310,8 @@ void do_bgfg(char **argv)
     int jid;
 
     if (arg == NULL) {
+        printf("%s: command requiers PID or %%jobid argument\n", argv[0]);
+        fflush(stdout);
         return;
     }
 
@@ -337,16 +339,16 @@ void do_bgfg(char **argv)
             return;
         }
     }
-    else if (!isdigit(arg[1])) {
-        printf("%s: argument must be a PID or %%jobid argument - info #4\n", argv[0]);
+    else { //if (!isdigit(arg[1])) {
+        printf("%s: argument must be a PID or %%jobid - info #4\n", argv[0]);
         fflush(stdout);
         return;
     }
-    else {
-        printf("%s: command requiers PID or %%jobid argument\n", argv[0]);
-        fflush(stdout);
-        return;
-    }
+    // else {
+    //     printf("%s: command requiers PID or %%jobid argument\n", argv[0]);
+    //     fflush(stdout);
+    //     return;
+    // }
 
     if (job == NULL) {
         return;
