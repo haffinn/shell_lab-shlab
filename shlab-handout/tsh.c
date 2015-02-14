@@ -4,7 +4,7 @@
  * You __MUST__ add your user information here below
  * 
  * === User information ===
- * Group: There is no place like 127.0.0.1
+ * Group: There_is_no_place_like_127.0.0.1
  * User 1: hafthort12
  * SSN: 220492-2819
  * User 2: hrafnkell13
